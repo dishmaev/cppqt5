@@ -43,7 +43,22 @@ checkRetValOK
 sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
 checkRetValOK
 
-qmake cppqt5.pro -spec linux-g++-64 CONFIG+=debug CONFIG+=qml_debug && /usr/bin/make qmake_all
+mkdir $VAR_SUITE
+checkRetValOK
+cd $VAR_SUITE
+checkRetValOK
+if [ "$VAR_SUITE" = "Debug" ]; then
+  qmake ../cppqt5.pro -spec linux-g++-64 CONFIG+=debug CONFIG+=qml_debug
+  checkRetValOK
+elif [ "$VAR_SUITE" = "Release" ]; then
+  qmake cppqt5.pro -spec linux-g++-64
+  checkRetValOK
+fi
+make
+checkRetValOK
+cd ..
+
+bash -x package-rpm.bash $VAR_SUITE
 checkRetValOK
 
 #make -f Makefile CONF=${VAR_SUITE}_RPM QMAKE=/usr/bin/qmake
