@@ -1,15 +1,12 @@
 #!/bin/bash -x
 
-#
-# Generated - do not edit!
-#
-
 # Macros
-TOP=`pwd`
 CND_CONF="${1}"
+OUTPUT_BASENAME="${2}"
+
+TOP=`pwd`
 CND_DLIB_EXT=so
 NBTMPDIR=${CND_CONF}/tmp-packaging
-OUTPUT_BASENAME=cppqt5
 OUTPUT_PATH=${CND_CONF}/${OUTPUT_BASENAME}
 PACKAGE_TOP_DIR=/usr/
 
@@ -77,7 +74,7 @@ then
     echo \"%_topdir ${NBTOPDIR}\" added to ${RPMMACROS}
     echo "**********************************************************************************************************"
     echo %_topdir ${NBTOPDIR} >> ${RPMMACROS}
-fi  
+fi
 mkdir -p ${NBTOPDIR}/RPMS
 
 # Create spec file

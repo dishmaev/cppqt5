@@ -39,10 +39,6 @@ tar -xvf *.tar.gz -C build/
 checkRetValOK
 cd build
 checkRetValOK
-
-sudo ln -s /usr/bin/qmake-qt5 /usr/bin/qmake
-checkRetValOK
-
 mkdir $VAR_SUITE
 checkRetValOK
 cd $VAR_SUITE
@@ -58,7 +54,7 @@ make
 checkRetValOK
 cd ..
 
-bash -x package-rpm.bash $VAR_SUITE 'cppqt5'
+bash -x package-apt.bash $VAR_SUITE 'cppqt5'
 checkRetValOK
 
 tar -cvf $HOME/$4 -C ${VAR_SUITE}/package .
@@ -69,9 +65,10 @@ cd $HOME
 ##test
 
 if [ ! -f "$4" ]; then echo "Output file $4 not found"; exit 1; fi
-for VAR_CUR_PACKAGE in $HOME/build/${VAR_SUITE}/package/*.rpm; do
+
+for VAR_CUR_PACKAGE in $HOME/build/${VAR_SUITE}/package/*.deb; do
   if [ ! -r "$VAR_CUR_PACKAGE" ]; then continue; fi
-  rpm -qip $VAR_CUR_PACKAGE
+  dpkg-deb -I $VAR_CUR_PACKAGE
   checkRetValOK
 done
 
