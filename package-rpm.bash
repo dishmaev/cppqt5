@@ -9,8 +9,17 @@ CND_DLIB_EXT=so
 NBTMPDIR=${CND_CONF}/tmp-packaging
 OUTPUT_PATH=${CND_CONF}/${OUTPUT_BASENAME}
 PACKAGE_TOP_DIR=/usr/
+PACKAGE_VERSION=package-version
 
 # Functions
+function checkPackageVersion
+{
+  if [ ! -r ${PACKAGE_VERSION} ]
+  then
+    exit 1
+  fi
+}
+
 function checkReturnCode
 {
     rc=$?
@@ -47,14 +56,15 @@ function copyFileToTmpDir
 
 # Setup
 cd "${TOP}"
+checkPackageVersion
 mkdir -p ${CND_CONF}/package
 rm -rf ${NBTMPDIR}
 mkdir -p ${NBTMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory "${NBTMPDIR}//usr/bin"
-copyFileToTmpDir "${OUTPUT_PATH}" "${NBTMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
+makeDirectory "${NBTMPDIR}/usr/bin"
+copyFileToTmpDir "${OUTPUT_PATH}" "${NBTMPDIR}${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Ensure proper rpm build environment
@@ -84,17 +94,16 @@ rm -f ${SPEC_FILE}
 
 cd "${TOP}"
 echo BuildRoot: ${TOP}/${NBTMPDIR} >> ${SPEC_FILE}
-echo 'Summary: Application that used Qt5 Library' >> ${SPEC_FILE}
+echo 'Summary: Sample application' >> ${SPEC_FILE}
 echo "Name: ${OUTPUT_BASENAME}" >> ${SPEC_FILE}
-echo 'Version: 0.1.0' >> ${SPEC_FILE}
+cat $PACKAGE_VERSION | sed 's/^/Version: /' >> ${SPEC_FILE}
 echo 'Release: 1' >> ${SPEC_FILE}
 echo 'Group: Applications/System' >> ${SPEC_FILE}
 echo 'License: MIT' >> ${SPEC_FILE}
 echo '%description' >> ${SPEC_FILE}
-echo 'Sample c++ boost application for test automation build deb and rpm packages' >> ${SPEC_FILE}
+echo 'Sample application for test automation build deb and rpm packages' >> ${SPEC_FILE}
 echo  >> ${SPEC_FILE}
 echo '%files' >> ${SPEC_FILE}
-echo \"/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}\" >> ${SPEC_FILE}
 echo \"/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}\" >> ${SPEC_FILE}
 echo '%dir' >> ${SPEC_FILE}
 
