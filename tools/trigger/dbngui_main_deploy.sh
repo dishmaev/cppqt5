@@ -18,12 +18,15 @@ checkRetValOK(){
 
 checkDpkgUnlock(){
   local CONST_LOCK_FILE='/var/lib/dpkg/lock'
-  local VAR_COUNT=10
-  local VAR_TRY=3
+  local CONST_TRY_NUM=3 #try num for long operation
+  local CONST_TRY_LONG=30 #one try long
+  local CONST_SLEEP_LONG=5 #sleep long
+  local VAR_COUNT=$CONST_TRY_LONG
+  local VAR_TRY=$CONST_TRY_NUM
   echo "Check /var/lib/dpkg/lock"
   while sudo fuser $CONST_LOCK_FILE >/dev/null 2>&1; do
     echo -n '.'
-    sleep 3
+    sleep $CONST_SLEEP_LONG
     VAR_COUNT=$((VAR_COUNT-1))
     if [ $VAR_COUNT -eq 0 ]; then
       VAR_TRY=$((VAR_TRY-1))
@@ -34,7 +37,7 @@ checkDpkgUnlock(){
         echo ''
         echo "Still locked $CONST_LOCK_FILE, left $VAR_TRY attempts"
       fi;
-      VAR_COUNT=3
+      VAR_COUNT=$CONST_TRY_LONG
     fi
   done
   echo ''
@@ -48,10 +51,10 @@ echo "Current deploy suite: $2"
 uname -a
 
 checkDpkgUnlock
-if [ "$1" = "rel" ]; then
+if [ "$2" = "rel" ]; then
   #install packages from personal repository
-#  sudo apt -y update
-#  checkRetValOK
+  sudo apt -y update
+  checkRetValOK
   sudo apt -y install $3
   checkRetValOK
 else # tst,dev
