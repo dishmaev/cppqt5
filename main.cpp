@@ -1,13 +1,15 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include <iostream>
+#include "package-spec.h"
 
 int main(int argc, char *argv[])
 {
     for (int i = 1; i < argc; i++) {
         QString str = argv[i];
         if (str == "--version") {
-            std::cout << "cppqt5 version 0.1.0" << std::endl;
+            QString version = CONST_PACKAGE_VERSION;
+            std::cout << "cppqt5 " << version.toStdString() << std::endl;
         }
         return 0;
     }
